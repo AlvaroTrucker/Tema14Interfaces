@@ -11,15 +11,18 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JPasswordField;
 
 public class EjercicioPasswordInterfaz {
 
 	private JFrame frame;
 	private JTextField textField;
-	private JTextField textField_1;
 	private JButton btnEntrar;
 	private JButton btnSalir;
 	private JButton btnOjo;
+	private JPasswordField passwordField;
+	private boolean mostrar = false;
 
 	/**
 	 * Launch the application.
@@ -59,9 +62,6 @@ public class EjercicioPasswordInterfaz {
 		textField = new JTextField();
 		textField.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		
 		btnEntrar = new JButton("Entrar");
 		btnEntrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -75,7 +75,18 @@ public class EjercicioPasswordInterfaz {
 			}
 		});
 		
-		btnOjo = new JButton("ojo");
+		btnOjo = new JButton("");
+		btnOjo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(mostrar){
+					passwordField.setEchoChar((char)0);
+				}else passwordField.setEchoChar('*');
+				mostrar = !mostrar;
+			}
+		});
+		btnOjo.setIcon(new ImageIcon(EjercicioPasswordInterfaz.class.getResource("/Imagenes/cerrado.png")));
+		
+		passwordField = new JPasswordField();
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -87,8 +98,8 @@ public class EjercicioPasswordInterfaz {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblContrasea)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addGap(6)
+									.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(btnOjo))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblUsuario)
@@ -99,7 +110,7 @@ public class EjercicioPasswordInterfaz {
 							.addComponent(btnEntrar)
 							.addGap(49)
 							.addComponent(btnSalir)))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap(64, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -111,9 +122,9 @@ public class EjercicioPasswordInterfaz {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblContrasea)
-						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnOjo))
-					.addPreferredGap(ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+						.addComponent(btnOjo, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+						.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnEntrar)
 						.addComponent(btnSalir))
@@ -121,5 +132,4 @@ public class EjercicioPasswordInterfaz {
 		);
 		frame.getContentPane().setLayout(groupLayout);
 	}
-
 }
