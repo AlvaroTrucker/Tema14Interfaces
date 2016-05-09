@@ -1,22 +1,29 @@
 package JEditorPane;
 
-import java.awt.EventQueue;
-import java.io.IOException;
-
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JEditorPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import java.awt.Panel;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
 
-public class NavegadorWeb {
+public class NavegadorWeb extends JFrame {
 
-	private JFrame frame;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JPanel contentPane;
+	private JTextField textFieldURL;
+	private JEditorPane editorPane;
+	private JButton btnNewButton;
+	private Historial historial;
+	private JButton botonSiguiente;
+	private JButton botonAnterior;
 
 	/**
 	 * Launch the application.
@@ -25,8 +32,8 @@ public class NavegadorWeb {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					NavegadorWeb window = new NavegadorWeb();
-					window.frame.setVisible(true);
+					NavegadorWeb frame = new NavegadorWeb();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -35,36 +42,113 @@ public class NavegadorWeb {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
 	public NavegadorWeb() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		historial = new Historial();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 600, 400);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
-		JEditorPane editorPane = new JEditorPane();
-		scrollPane.setColumnHeaderView(editorPane);
+		editorPane = new JEditorPane();
+		scrollPane.setViewportView(editorPane);
 		
-		Panel panel = new Panel();
-		scrollPane.setViewportView(panel);
+		JPanel panel = new JPanel();
+		contentPane.add(panel, BorderLayout.NORTH);
 		
-		textField_1 = new JTextField();
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		btnNewButton = new JButton("");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					editorPane.setPage("http://www.google.es");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		
-		JButton btnNewButton = new JButton("New button");
+		botonAnterior = new JButton("<<");
+		botonAnterior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String url = historial.previous();
+				if (url != null) {
+					botonAnterior.setEnabled(true);
+					try {
+						editorPane.setPage(url);
+						textFieldURL.setText(url);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					botonAnterior.setEnabled(false);
+				}
+			}
+		});
+		panel.add(botonAnterior);
+		
+		botonSiguiente = new JButton(">>");
+		botonSiguiente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String url = historial.next();
+				if (url != null) {
+					botonSiguiente.setEnabled(true);
+					try {
+						editorPane.setPage(url);
+						textFieldURL.setText(url);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					botonSiguiente.setEnabled(false);
+				}
+			}
+		});
+		panel.add(botonSiguiente);
+		btnNewButton.setIcon(new ImageIcon(NavegadorWeb.class.getResource("/com/sun/java/swing/plaf/windows/icons/HomeFolder.gif")));
 		panel.add(btnNewButton);
-		}
+		
+		textFieldURL = new JTextField();
+		textFieldURL.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTextField t = (JTextField)e.getSource();
+				String url = t.getText();
+				try {
+					editorPane.setPage(url);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		panel.add(textFieldURL);
+		textFieldURL.setColumns(25);
+		
+		JButton botonIr = new JButton("");
+		botonIr.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String url = textFieldURL.getText();
+					editorPane.setPage(url);
+					historial.add(url);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		botonIr.setIcon(new ImageIcon(NavegadorWeb.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
+		panel.add(botonIr);
 	}
 
+}
